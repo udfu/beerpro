@@ -107,6 +107,13 @@ public class ProfileFragment extends Fragment {
         startActivity(intent);
     }
 
+    /*
+    @OnClick(R.id.myFridge)
+    public void handleMyFridgeClick(View view) {
+        Intent intent = new Intent(getActivity(), MyFridgeActivity.class);
+        startActivity(intent);
+    }*/
+
     private void updateRatingsCount(List<Rating> ratings) {
         myRatingsCount.setText(String.valueOf(ratings.size()));
     }
