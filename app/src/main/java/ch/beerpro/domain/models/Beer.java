@@ -24,4 +24,23 @@ public class Beer implements Entity, Serializable {
     private float avgRating;
     private int numRatings;
 
+    public String getName() {
+        return name;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public float getAvgRating() {
+        return avgRating;
+    }
 }

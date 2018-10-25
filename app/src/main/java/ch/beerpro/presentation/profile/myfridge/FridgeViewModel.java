@@ -11,31 +11,34 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import ch.beerpro.data.repositories.BeersRepository;
 import ch.beerpro.data.repositories.CurrentUser;
+import ch.beerpro.data.repositories.FridgeRepository;
 import ch.beerpro.data.repositories.WishlistRepository;
 import ch.beerpro.domain.models.Beer;
+import ch.beerpro.domain.models.Fridge;
 import ch.beerpro.domain.models.Wish;
 
 public class FridgeViewModel extends ViewModel implements CurrentUser {
 
-    private static final String TAG = "WishlistViewModel";
+    private static final String TAG = "FridgeViewModel";
 
     private final MutableLiveData<String> currentUserId = new MutableLiveData<>();
-    private final WishlistRepository wishlistRepository;
+    private final FridgeRepository fridgeRepository;
     private final BeersRepository beersRepository;
 
     public FridgeViewModel() {
-        wishlistRepository = new WishlistRepository();
+        fridgeRepository = new FridgeRepository();
         beersRepository = new BeersRepository();
 
         currentUserId.setValue(getCurrentUser().getUid());
     }
 
-    public LiveData<List<Pair<Wish, Beer>>> getMyWishlistWithBeers() {
-        return wishlistRepository.getMyWishlistWithBeers(currentUserId, beersRepository.getAllBeers());
+
+    public LiveData<List<Pair<Fridge, Beer>>> getMyFridgeWithBeers() {
+        return fridgeRepository.getMyFridgeWithBeers(currentUserId, beersRepository.getAllBeers());
     }
 
-    public Task<Void> toggleItemInWishlist(String itemId) {
-        return wishlistRepository.toggleUserWishlistItem(getCurrentUser().getUid(), itemId);
+    public Task<Void> toggleBeerToFridge(String itemId) {
+        return fridgeRepository.toggleBeerToFridge(getCurrentUser().getUid(), itemId);
     }
 
 }

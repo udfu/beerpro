@@ -34,6 +34,15 @@ public class Fridge implements Entity {
     @NonNull
     private Date addedAt;
 
+    public Fridge(String userId, String itemId, int i, Date date) {
+        this.userId= userId;
+        this.beerId = itemId;
+        this.amount = i;
+        this.addedAt = date;
+    }
+
+
+
     /**
      * We use a Map instead of an Array to be able to query it.
      *
@@ -43,4 +52,14 @@ public class Fridge implements Entity {
     public static String generateId(String userId, String beerId) {
         return String.format("%s_%s", userId, beerId);
     }
+
+    public String getBeerId() {
+        return beerId;
+    }
+
+
+    public Date getAddedAt() {
+        return addedAt;
+    }
+
 }
