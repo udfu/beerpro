@@ -64,7 +64,7 @@ public class FridgeRepository {
             return null;
         });
     }*/
-
+    /*
     public Task<Void> toggleBeerToFridge(String userId, String itemId) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -81,7 +81,7 @@ public class FridgeRepository {
                 throw task.getException();
             }
         });
-    }
+    }*/
 
     /*
 
