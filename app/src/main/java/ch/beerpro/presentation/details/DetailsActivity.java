@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -63,9 +64,6 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
 
     @BindView(R.id.wishlist)
     ToggleButton wishlist;
-
-    @BindView(R.id.fridge)
-    ToggleButton fridge;
 
     @BindView(R.id.manufacturer)
     TextView manufacturer;
@@ -129,6 +127,14 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(view);
         dialog.show();
+
+        view.findViewById(R.id.addToFridge).setOnClickListener( v -> {
+            dialog.dismiss();
+            model.toggleBeerInFridge(model.getBeer().getValue().getId())
+                    .addOnSuccessListener(task -> onBackPressed())
+                    .addOnFailureListener(error -> Log.e(TAG, "Could not add to fridge", error));
+        });
+
     }
 
     private void updateBeer(Beer item) {
@@ -156,6 +162,7 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
 
 
 
+    /*
     @OnClick(R.id.fridge)
     public void addBeerToFridge(View view){
         model.toggleBeerInFridge(model.getBeer().getValue().getId());
@@ -172,7 +179,7 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
             setDrawableTint(fridge, color);
             fridge.setChecked(false);
         }
-    }
+    }*/
 
     @OnClick(R.id.wishlist)
     public void onWishClickedListener(View view) {
