@@ -43,9 +43,9 @@ public class FridgeRepository {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        String wishId = FridgeEntry.generateId(userId, itemId);
+        String fridgeEntryId = FridgeEntry.generateId(userId, itemId);
 
-        DocumentReference fridgeEntryQuery = db.collection(FridgeEntry.COLLECTION).document(wishId);
+        DocumentReference fridgeEntryQuery = db.collection(FridgeEntry.COLLECTION).document(fridgeEntryId);
 
         return fridgeEntryQuery.get().continueWithTask(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
@@ -56,16 +56,17 @@ public class FridgeRepository {
                 throw task.getException();
             }
         });
+
     }
 
     public LiveData<List<Pair<FridgeEntry, Beer>>> getMyFridgeWithBeers(LiveData<String> currentUserId,
                                                                    LiveData<List<Beer>> allBeers) {
         return map(combineLatest(getMyFridge(currentUserId), map(allBeers, Entity::entitiesById)), input -> {
-            List<FridgeEntry> wishes = input.first;
+            List<FridgeEntry> entries = input.first;
             HashMap<String, Beer> beersById = input.second;
 
             ArrayList<Pair<FridgeEntry, Beer>> result = new ArrayList<>();
-            for (FridgeEntry fridgeEntry : wishes) {
+            for (FridgeEntry fridgeEntry : entries) {
                 Beer beer = beersById.get(fridgeEntry.getBeerId());
                 result.add(Pair.create(fridgeEntry, beer));
             }
