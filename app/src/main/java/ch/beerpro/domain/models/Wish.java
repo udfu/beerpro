@@ -36,4 +36,22 @@ public class Wish implements Entity {
     public static String generateId(String userId, String beerId) {
         return String.format("%s_%s", userId, beerId);
     }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Date getAddedAt() {
+        return addedAt;
+    }
+
+    public String getBeerId() {
+        return beerId;
+    }
 }

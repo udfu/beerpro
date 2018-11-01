@@ -23,6 +23,7 @@ import butterknife.OnClick;
 import ch.beerpro.GlideApp;
 import ch.beerpro.R;
 import ch.beerpro.domain.models.Beer;
+import ch.beerpro.domain.models.FridgeEntry;
 import ch.beerpro.domain.models.Rating;
 import ch.beerpro.domain.models.Wish;
 import ch.beerpro.presentation.details.createrating.CreateRatingActivity;
@@ -62,6 +63,9 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
 
     @BindView(R.id.wishlist)
     ToggleButton wishlist;
+
+    @BindView(R.id.fridge)
+    ToggleButton fridge;
 
     @BindView(R.id.manufacturer)
     TextView manufacturer;
@@ -105,6 +109,7 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         model.getBeer().observe(this, this::updateBeer);
         model.getRatings().observe(this, this::updateRatings);
         model.getWish().observe(this, this::toggleWishlistView);
+        model.getFridgeEntry().observe(this,this::toggleFridgeView);
 
         recyclerView.setAdapter(adapter);
         addRatingBar.setOnRatingBarChangeListener(this::addNewRating);
@@ -147,6 +152,26 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
     @Override
     public void onRatingLikedListener(Rating rating) {
         model.toggleLike(rating);
+    }
+
+
+
+    @OnClick(R.id.fridge)
+    public void addBeerToFridge(View view){
+        model.toggleBeerInFridge(model.getBeer().getValue().getId());
+    }
+
+
+    private void toggleFridgeView(FridgeEntry fridgeEntry) {
+        if (fridgeEntry != null) {
+            int color = getResources().getColor(R.color.colorPrimary);
+            setDrawableTint(fridge, color);
+            fridge.setChecked(true);
+        } else {
+            int color = getResources().getColor(android.R.color.darker_gray);
+            setDrawableTint(fridge, color);
+            fridge.setChecked(false);
+        }
     }
 
     @OnClick(R.id.wishlist)

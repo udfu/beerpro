@@ -3,12 +3,9 @@ package ch.beerpro.data.repositories;
 import android.util.Pair;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,8 +15,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import ch.beerpro.domain.models.Beer;
 import ch.beerpro.domain.models.Entity;
-import ch.beerpro.domain.models.Fridge;
-import ch.beerpro.domain.models.Wish;
+import ch.beerpro.domain.models.FridgeEntry;
 import ch.beerpro.domain.utils.FirestoreQueryLiveData;
 import ch.beerpro.domain.utils.FirestoreQueryLiveDataArray;
 
@@ -29,84 +25,62 @@ import static ch.beerpro.domain.utils.LiveDataExtensions.combineLatest;
 
 public class FridgeRepository {
 
-
-    private static LiveData<List<Fridge>> getFridgeByUser(String userId) {
-        return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Fridge.COLLECTION)
-                .orderBy(Fridge.FIELD_ADDED_AT, Query.Direction.DESCENDING).whereEqualTo(Fridge.FIELD_USER_ID, userId),
-                Fridge.class);
+    private static LiveData<List<FridgeEntry>> getFridgeEntriesByUser(String userId) {
+        return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(FridgeEntry.COLLECTION)
+                .orderBy(FridgeEntry.FIELD_ADDED_AT, Query.Direction.DESCENDING).whereEqualTo(FridgeEntry.FIELD_USER_ID, userId),
+                FridgeEntry.class);
     }
 
-    /*
-    private static LiveData<Wish> getUserWishListFor(Pair<String, Beer> input) {
+    private static LiveData<FridgeEntry> getUserFridgeEntriesFor(Pair<String, Beer> input) {
         String userId = input.first;
         Beer beer = input.second;
-        DocumentReference document = FirebaseFirestore.getInstance().collection(Wish.COLLECTION)
-                .document(Wish.generateId(userId, beer.getId()));
-        return new FirestoreQueryLiveData<>(document, Wish.class);
-    }*/
-/*
-    public void toggleItemInFridge(Fridge fridge, Beer beer) {
+        DocumentReference document = FirebaseFirestore.getInstance().collection(FridgeEntry.COLLECTION)
+                .document(FridgeEntry.generateId(userId, beer.getId()));
+        return new FirestoreQueryLiveData<>(document, FridgeEntry.class);
+    }
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final DocumentReference beerRef = db.collection(Fridge.COLLECTION).document(beer.getId());
-
-        db.runTransaction((Transaction.Function<Void>) transaction -> {
-            Rating currentRating = parser.parseSnapshot(transaction.get(ratingRef));
-            Map<String, Boolean> likes = currentRating.getLikes();
-            String currentUserUid = currentUser.getUid();
-            if (likes.containsKey(currentUserUid)) {
-                likes.remove(currentUserUid);
-            } else {
-                likes.put(currentUserUid, true);
-            }
-            transaction.update(ratingRef, Rating.FIELD_LIKES, likes);
-            return null;
-        });
-    }*/
-
-    public Task<Void> toggleBeerToFridge(String userId, String itemId) {
+    public Task<Void> toggleUserFridgeItem(String userId, String itemId) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String fridgeBeerId = Fridge.generateId(userId, itemId);
 
-        DocumentReference fridgeEntryQuery = db.collection(Fridge.COLLECTION).document(fridgeBeerId);
+        String wishId = FridgeEntry.generateId(userId, itemId);
+
+        DocumentReference fridgeEntryQuery = db.collection(FridgeEntry.COLLECTION).document(wishId);
 
         return fridgeEntryQuery.get().continueWithTask(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
                 return fridgeEntryQuery.delete();
             } else if (task.isSuccessful()) {
-                return fridgeEntryQuery.set(new Fridge(userId, itemId, 1,new Date()));
+                return fridgeEntryQuery.set(new FridgeEntry(userId, itemId, 0,new Date()));
             } else {
                 throw task.getException();
             }
         });
     }
 
-    public LiveData<List<Pair<Fridge, Beer>>> getMyFridgeWithBeers(LiveData<String> currentUserId,
+    public LiveData<List<Pair<FridgeEntry, Beer>>> getMyFridgeWithBeers(LiveData<String> currentUserId,
                                                                    LiveData<List<Beer>> allBeers) {
         return map(combineLatest(getMyFridge(currentUserId), map(allBeers, Entity::entitiesById)), input -> {
-            List<Fridge> fridgeEntries = input.first;
+            List<FridgeEntry> wishes = input.first;
             HashMap<String, Beer> beersById = input.second;
 
-            ArrayList<Pair<Fridge, Beer>> result = new ArrayList<>();
-            for (Fridge fridge : fridgeEntries) {
-                Beer beer = beersById.get(fridge.getBeerId());
-                result.add(Pair.create(fridge, beer));
+            ArrayList<Pair<FridgeEntry, Beer>> result = new ArrayList<>();
+            for (FridgeEntry fridgeEntry : wishes) {
+                Beer beer = beersById.get(fridgeEntry.getBeerId());
+                result.add(Pair.create(fridgeEntry, beer));
             }
             return result;
         });
     }
 
-    public LiveData<List<Fridge>> getMyFridge(LiveData<String> currentUserId) {
-        return switchMap(currentUserId, FridgeRepository::getFridgeByUser);
+    public LiveData<List<FridgeEntry>> getMyFridge(LiveData<String> currentUserId) {
+        return switchMap(currentUserId, FridgeRepository::getFridgeEntriesByUser);
     }
 
-    /*
-    public LiveData<Wish> getMyWishForBeer(LiveData<String> currentUserId, LiveData<Beer> beer) {
 
-
-        return switchMap(combineLatest(currentUserId, beer), FridgeRepository::getUserWishListFor);
-    }*/
+    public LiveData<FridgeEntry> getMyFrigdeForBeer(LiveData<String> currentUserId, LiveData<Beer> beer) {
+        return switchMap(combineLatest(currentUserId, beer), FridgeRepository::getUserFridgeEntriesFor);
+    }
 
 }
+

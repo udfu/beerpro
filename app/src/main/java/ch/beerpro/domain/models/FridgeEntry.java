@@ -13,7 +13,7 @@ import lombok.NonNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Fridge implements Entity {
+public class FridgeEntry implements Entity {
 
     public static final String COLLECTION = "fridge";
     public static final String FIELD_ID = "id";
@@ -34,7 +34,7 @@ public class Fridge implements Entity {
     @NonNull
     private Date addedAt;
 
-    public Fridge(String userId, String itemId, int i, Date date) {
+    public FridgeEntry(String userId, String itemId, int i, Date date) {
         this.userId= userId;
         this.beerId = itemId;
         this.amount = i;
@@ -42,12 +42,18 @@ public class Fridge implements Entity {
     }
 
 
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
 
     /**
      * We use a Map instead of an Array to be able to query it.
      *
      * @see <a href="https://firebase.google.com/docs/firestore/solutions/arrays#solution_a_map_of_values"/>
      */
+
+
 
     public static String generateId(String userId, String beerId) {
         return String.format("%s_%s", userId, beerId);
@@ -62,4 +68,8 @@ public class Fridge implements Entity {
         return addedAt;
     }
 
+    @Override
+    public String getId() {
+        return id;
+    }
 }

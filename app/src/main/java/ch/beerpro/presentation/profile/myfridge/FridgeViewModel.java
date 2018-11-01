@@ -12,10 +12,8 @@ import androidx.lifecycle.ViewModel;
 import ch.beerpro.data.repositories.BeersRepository;
 import ch.beerpro.data.repositories.CurrentUser;
 import ch.beerpro.data.repositories.FridgeRepository;
-import ch.beerpro.data.repositories.WishlistRepository;
 import ch.beerpro.domain.models.Beer;
-import ch.beerpro.domain.models.Fridge;
-import ch.beerpro.domain.models.Wish;
+import ch.beerpro.domain.models.FridgeEntry;
 
 public class FridgeViewModel extends ViewModel implements CurrentUser {
 
@@ -33,12 +31,12 @@ public class FridgeViewModel extends ViewModel implements CurrentUser {
     }
 
 
-    public LiveData<List<Pair<Fridge, Beer>>> getMyFridgeWithBeers() {
+    public LiveData<List<Pair<FridgeEntry, Beer>>> getMyFridgeWithBeers() {
         return fridgeRepository.getMyFridgeWithBeers(currentUserId, beersRepository.getAllBeers());
     }
 
     public Task<Void> toggleBeerToFridge(String itemId) {
-        return fridgeRepository.toggleBeerToFridge(getCurrentUser().getUid(), itemId);
+        return fridgeRepository.toggleUserFridgeItem(getCurrentUser().getUid(), itemId);
     }
 
 }

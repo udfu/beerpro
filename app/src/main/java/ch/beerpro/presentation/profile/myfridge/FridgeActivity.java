@@ -19,12 +19,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.beerpro.R;
 import ch.beerpro.domain.models.Beer;
-import ch.beerpro.domain.models.Fridge;
-import ch.beerpro.domain.models.Wish;
+import ch.beerpro.domain.models.FridgeEntry;
 import ch.beerpro.presentation.details.DetailsActivity;
-import ch.beerpro.presentation.profile.mywishlist.OnWishlistItemInteractionListener;
-import ch.beerpro.presentation.profile.mywishlist.WishlistRecyclerViewAdapter;
-import ch.beerpro.presentation.profile.mywishlist.WishlistViewModel;
 import lombok.val;
 
 public class FridgeActivity extends AppCompatActivity implements OnFridgeItemInteractionListener{
@@ -44,11 +40,11 @@ public class FridgeActivity extends AppCompatActivity implements OnFridgeItemInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_wishlist);
+        setContentView(R.layout.activity_my_fridge);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.title_activity_wishlist));
+        getSupportActionBar().setTitle(getString(R.string.title_activity_my_fridge));
 
 
         model = ViewModelProviders.of(this).get(FridgeViewModel.class);
@@ -63,7 +59,7 @@ public class FridgeActivity extends AppCompatActivity implements OnFridgeItemInt
 
     }
 
-    private void updateFridge(List<Pair<Fridge, Beer>> entries) {
+    private void updateFridge(List<Pair<FridgeEntry, Beer>> entries) {
         adapter.submitList(entries);
         if (entries.isEmpty()) {
             emptyView.setVisibility(View.VISIBLE);

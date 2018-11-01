@@ -76,6 +76,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".presentation.MainActivity" />
         </activity>
+        <activity
+            android:name=".presentation.profile.myfridge.FridgeActivity"
+            android:label="@string/title_activity_my_fridge"
+            android:parentActivityName=".presentation.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".presentation.MainActivity" />
+
+        </activity>
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     </application>
 
 </manifest>

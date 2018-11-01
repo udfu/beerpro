@@ -7,20 +7,25 @@ import lombok.Data;
 @Data
 public class MyBeerFromFridge implements MyBeer {
 
-        private Fridge fridge;
+    private FridgeEntry fridgeEntry;
     private Beer beer;
 
-    public MyBeerFromFridge(Fridge fridge, Beer beer) {
-        this.fridge = fridge;
+    public MyBeerFromFridge(FridgeEntry fridgeEntry, Beer beer) {
+        this.fridgeEntry = fridgeEntry;
         this.beer = beer;
     }
 
 
     @Override
-    public String getBeerId() { return fridge.getBeerId(); }
+    public String getBeerId() { return fridgeEntry.getBeerId(); }
 
     @Override
     public Date getDate() {
-        return fridge.getAddedAt();
+        return fridgeEntry.getAddedAt();
+    }
+
+    @Override
+    public Beer getBeer() {
+        return beer;
     }
 }

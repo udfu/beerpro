@@ -23,7 +23,6 @@ import static ch.beerpro.domain.utils.LiveDataExtensions.combineLatest;
 
 public class WishlistRepository {
 
-
     private static LiveData<List<Wish>> getWishesByUser(String userId) {
         return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Wish.COLLECTION)
                 .orderBy(Wish.FIELD_ADDED_AT, Query.Direction.DESCENDING).whereEqualTo(Wish.FIELD_USER_ID, userId),
@@ -82,6 +81,5 @@ public class WishlistRepository {
 
         return switchMap(combineLatest(currentUserId, beer), WishlistRepository::getUserWishListFor);
     }
-
 
 }
