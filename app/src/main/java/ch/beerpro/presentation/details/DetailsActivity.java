@@ -124,6 +124,8 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
 
         adapter2 = new NoticeRecyclerViewAdapter(model.getCurrentUser());
         recyclerView2.addItemDecoration(new DividerItemDecoration(this, layoutManager2.getOrientation()));
+
+        recyclerView2.setAdapter(adapter2);
     }
 
     private void addNewRating(RatingBar ratingBar, float v, boolean b) {
