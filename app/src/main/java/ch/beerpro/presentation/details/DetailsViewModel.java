@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import ch.beerpro.data.repositories.*;
 import ch.beerpro.domain.models.Beer;
 import ch.beerpro.domain.models.FridgeEntry;
+import ch.beerpro.domain.models.Notice;
 import ch.beerpro.domain.models.Rating;
 import ch.beerpro.domain.models.Wish;
 import com.google.android.gms.tasks.Task;
@@ -17,6 +18,7 @@ public class DetailsViewModel extends ViewModel implements CurrentUser {
     private final MutableLiveData<String> beerId = new MutableLiveData<>();
     private final LiveData<Beer> beer;
     private final LiveData<List<Rating>> ratings;
+    private final LiveData<List<Notice>> notices;
     private final LiveData<Wish> wish;
     private final LiveData<FridgeEntry> fridgeEntry;
 
@@ -37,6 +39,7 @@ public class DetailsViewModel extends ViewModel implements CurrentUser {
         wish = wishlistRepository.getMyWishForBeer(currentUserId, getBeer());
         fridgeEntry = fridgeRepository.getMyFrigdeForBeer(currentUserId,getBeer());
         ratings = ratingsRepository.getRatingsForBeer(beerId);
+        notices = ratingsRepository.getNoticesForBeer(beerId);
         currentUserId.setValue(getCurrentUser().getUid());
     }
 
@@ -53,6 +56,9 @@ public class DetailsViewModel extends ViewModel implements CurrentUser {
     public LiveData<List<Rating>> getRatings() {
         return ratings;
     }
+
+    public LiveData<List<Notice>> getNotices(){return notices;}
+
 
     public void setBeerId(String beerId) {
         this.beerId.setValue(beerId);

@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ch.beerpro.GlideApp;
 import ch.beerpro.R;
+import ch.beerpro.domain.models.FridgeEntry;
 import ch.beerpro.domain.models.Rating;
 import ch.beerpro.domain.models.Wish;
 import ch.beerpro.presentation.MainViewModel;
@@ -72,6 +73,7 @@ public class ProfileFragment extends Fragment {
         model.getMyWishlist().observe(this, this::updateWishlistCount);
         model.getMyRatings().observe(this, this::updateRatingsCount);
         model.getMyBeers().observe(this, this::updateMyBeersCount);
+        model.getMyFridgeEntry().observe(this,this::updateFridgeCount);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -114,19 +116,16 @@ public class ProfileFragment extends Fragment {
         startActivity(intent);
     }
 
-    /*
-    @OnClick(R.id.myFridge)
-    public void handleMyFridgeClick(View view) {
-        Intent intent = new Intent(getActivity(), MyFridgeActivity.class);
-        startActivity(intent);
-    }*/
-
     private void updateRatingsCount(List<Rating> ratings) {
         myRatingsCount.setText(String.valueOf(ratings.size()));
     }
 
     private void updateWishlistCount(List<Wish> wishes) {
         myWishlistCount.setText(String.valueOf(wishes.size()));
+    }
+
+    private void updateFridgeCount(List<FridgeEntry> fridgeEntries){
+        myFridgeCount.setText(String.valueOf(fridgeEntries.size()));
     }
 
 }

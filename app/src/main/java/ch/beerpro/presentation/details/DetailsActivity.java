@@ -25,8 +25,10 @@ import ch.beerpro.GlideApp;
 import ch.beerpro.R;
 import ch.beerpro.domain.models.Beer;
 import ch.beerpro.domain.models.FridgeEntry;
+import ch.beerpro.domain.models.Notice;
 import ch.beerpro.domain.models.Rating;
 import ch.beerpro.domain.models.Wish;
+import ch.beerpro.presentation.details.createrating.CreateNoticeActivity;
 import ch.beerpro.presentation.details.createrating.CreateRatingActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -77,7 +79,11 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
+    @BindView(R.id.recyclerView2)
+    RecyclerView recyclerView2;
+
     private RatingsRecyclerViewAdapter adapter;
+    private NoticeRecyclerViewAdapter adapter2;
 
     private DetailsViewModel model;
 
@@ -107,10 +113,17 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         model.getBeer().observe(this, this::updateBeer);
         model.getRatings().observe(this, this::updateRatings);
         model.getWish().observe(this, this::toggleWishlistView);
-        model.getFridgeEntry().observe(this,this::toggleFridgeView);
+        model.getNotices().observe(this,this::updateNotices);
+        //model.getFridgeEntry().observe(this,this::toggleFridgeView);
 
         recyclerView.setAdapter(adapter);
         addRatingBar.setOnRatingBarChangeListener(this::addNewRating);
+
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
+        recyclerView2.setLayoutManager(layoutManager2);
+
+        adapter2 = new NoticeRecyclerViewAdapter(model.getCurrentUser());
+        recyclerView2.addItemDecoration(new DividerItemDecoration(this, layoutManager2.getOrientation()));
     }
 
     private void addNewRating(RatingBar ratingBar, float v, boolean b) {
@@ -127,6 +140,14 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(view);
         dialog.show();
+
+
+        view.findViewById(R.id.addPrivateNote).setOnClickListener( v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(this, CreateNoticeActivity.class);
+            intent.putExtra(CreateNoticeActivity.ITEM, model.getBeer().getValue());
+            startActivity(intent);
+        });
 
         view.findViewById(R.id.addToFridge).setOnClickListener( v -> {
             dialog.dismiss();
@@ -155,20 +176,23 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         adapter.submitList(new ArrayList<>(ratings));
     }
 
+    private void updateNotices(List<Notice> notices) {
+        adapter2.submitList(new ArrayList<>(notices));
+    }
+
     @Override
     public void onRatingLikedListener(Rating rating) {
         model.toggleLike(rating);
     }
 
 
-
     /*
     @OnClick(R.id.fridge)
     public void addBeerToFridge(View view){
         model.toggleBeerInFridge(model.getBeer().getValue().getId());
-    }
+    }*/
 
-
+    /*
     private void toggleFridgeView(FridgeEntry fridgeEntry) {
         if (fridgeEntry != null) {
             int color = getResources().getColor(R.color.colorPrimary);

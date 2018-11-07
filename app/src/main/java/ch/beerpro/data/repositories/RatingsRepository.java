@@ -2,9 +2,12 @@ package ch.beerpro.data.repositories;
 
 import android.util.Pair;
 import androidx.lifecycle.LiveData;
+import ch.beerpro.domain.models.Notice;
 import ch.beerpro.domain.models.Rating;
 import ch.beerpro.domain.models.Wish;
 import ch.beerpro.domain.utils.FirestoreQueryLiveDataArray;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -86,5 +89,25 @@ public class RatingsRepository {
 
     public LiveData<List<Rating>> getMyRatings(LiveData<String> currentUserId) {
         return switchMap(currentUserId, RatingsRepository::getRatingsByUser);
+    }
+
+    public static LiveData<List<Notice>> getNoticesByBeer(String beerId) {
+        return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Notice.COLLECTION)
+                .orderBy(Notice.FIELD_CREATION_DATE, Query.Direction.DESCENDING)
+                .whereEqualTo(Notice.FIELD_BEER_ID, beerId).whereEqualTo(Notice.FIELD_USER_ID, FirebaseAuth.getInstance().getCurrentUser().getUid()), Notice.class);
+    }
+    public static LiveData<List<Notice>> getNoticesByUser(String userId) {
+        return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Notice.COLLECTION)
+                .orderBy(Notice.FIELD_CREATION_DATE, Query.Direction.DESCENDING)
+                .whereEqualTo(Notice.FIELD_USER_ID, userId), Notice.class);
+    }
+
+    public LiveData<List<Notice>> getNoticesForBeer(LiveData<String> beerId) {
+        return switchMap(beerId, RatingsRepository::getNoticesByBeer);
+    }
+
+
+    public LiveData<List<Notice>> getMyNotices(LiveData<String> currentUserId) {
+        return switchMap(currentUserId, RatingsRepository::getNoticesByUser);
     }
 }

@@ -29,7 +29,7 @@ public class FridgeEntry implements Entity {
     private String userId;
     @NonNull
     private String beerId;
-    @NonNull
+
     private int amount;
     @NonNull
     private Date addedAt;
