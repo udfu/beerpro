@@ -7,6 +7,8 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ToggleButton;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -14,13 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ch.beerpro.R;
 import ch.beerpro.domain.models.Beer;
+import ch.beerpro.domain.models.FridgeEntry;
 import ch.beerpro.domain.models.Wish;
 import ch.beerpro.presentation.details.DetailsActivity;
+import ch.beerpro.presentation.details.DetailsViewModel;
 import lombok.val;
 
 import java.util.List;
+
+import static ch.beerpro.presentation.utils.DrawableHelpers.setDrawableTint;
 
 public class WishlistActivity extends AppCompatActivity implements OnWishlistItemInteractionListener {
 
@@ -45,9 +52,9 @@ public class WishlistActivity extends AppCompatActivity implements OnWishlistIte
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.title_activity_wishlist));
 
-
         model = ViewModelProviders.of(this).get(WishlistViewModel.class);
         model.getMyWishlistWithBeers().observe(this, this::updateWishlist);
+
 
         val layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -93,4 +100,6 @@ public class WishlistActivity extends AppCompatActivity implements OnWishlistIte
     public void onWishClickedListener(Beer beer) {
         model.toggleItemInWishlist(beer.getId());
     }
+
+
 }

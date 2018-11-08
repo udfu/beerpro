@@ -12,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
@@ -67,6 +68,9 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
     @BindView(R.id.wishlist)
     ToggleButton wishlist;
 
+    @BindView((R.id.fridge))
+    ToggleButton fridge;
+
     @BindView(R.id.manufacturer)
     TextView manufacturer;
 
@@ -114,7 +118,7 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         model.getRatings().observe(this, this::updateRatings);
         model.getWish().observe(this, this::toggleWishlistView);
         model.getNotices().observe(this,this::updateNotices);
-        //model.getFridgeEntry().observe(this,this::toggleFridgeView);
+        model.getFridgeEntry().observe(this,this::toggleFridgeView);
 
         recyclerView.setAdapter(adapter);
         addRatingBar.setOnRatingBarChangeListener(this::addNewRating);
@@ -188,15 +192,19 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
     }
 
 
-    /*
     @OnClick(R.id.fridge)
-    public void addBeerToFridge(View view){
+    public void onFridgeClickedListener(View view) {
         model.toggleBeerInFridge(model.getBeer().getValue().getId());
-    }*/
+        /*
+         * We won't get an update from firestore when the wish is removed, so we need to reset the UI state ourselves.
+         * */
+        if (!fridge.isChecked()) {
+            toggleFridgeView(null);
+        }
+    }
 
-    /*
-    private void toggleFridgeView(FridgeEntry fridgeEntry) {
-        if (fridgeEntry != null) {
+    private void toggleFridgeView(FridgeEntry fridgeContent) {
+        if (fridgeContent != null) {
             int color = getResources().getColor(R.color.colorPrimary);
             setDrawableTint(fridge, color);
             fridge.setChecked(true);
@@ -205,7 +213,7 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
             setDrawableTint(fridge, color);
             fridge.setChecked(false);
         }
-    }*/
+    }
 
     @OnClick(R.id.wishlist)
     public void onWishClickedListener(View view) {

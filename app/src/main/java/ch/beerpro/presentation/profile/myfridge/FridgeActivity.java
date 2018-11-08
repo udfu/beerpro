@@ -59,6 +59,10 @@ public class FridgeActivity extends AppCompatActivity implements OnFridgeItemInt
 
     }
 
+    public void updateFridgeUI(){
+        model.getMyFridgeWithBeers().observe(this,this::updateFridge);
+    }
+
     private void updateFridge(List<Pair<FridgeEntry, Beer>> entries) {
         adapter.submitList(entries);
         if (entries.isEmpty()) {

@@ -100,7 +100,9 @@ public class FridgeRecyclerViewAdapter extends ListAdapter<Pair<FridgeEntry, Bee
             String formattedDate =
                     DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT).format(fridgeEntry.getAddedAt());
             addedAt.setText(formattedDate);
-            remove.setOnClickListener(v -> listener.onFridgeClickedListener(item));
+            remove.setOnClickListener(v -> {
+                listener.onFridgeClickedListener(item);
+            });
         }
 
     }
