@@ -35,4 +35,8 @@ public class Rating implements Entity {
      */
     private Map<String, Boolean> likes;
     private Date creationDate;
+
+    public float getRating() {
+        return rating;
+    }
 }

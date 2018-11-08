@@ -12,7 +12,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
@@ -24,14 +23,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ch.beerpro.GlideApp;
 import ch.beerpro.R;
-import ch.beerpro.domain.models.Beer;
-import ch.beerpro.domain.models.FridgeEntry;
-import ch.beerpro.domain.models.Notice;
-import ch.beerpro.domain.models.Rating;
-import ch.beerpro.domain.models.Wish;
+import ch.beerpro.domain.models.*;
 import ch.beerpro.presentation.details.createrating.CreateNoticeActivity;
 import ch.beerpro.presentation.details.createrating.CreateRatingActivity;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -116,9 +110,10 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
 
         model.getBeer().observe(this, this::updateBeer);
         model.getRatings().observe(this, this::updateRatings);
+        model.getMyRatings().observe(this, this::updateMyRatings);
         model.getWish().observe(this, this::toggleWishlistView);
-        model.getNotices().observe(this,this::updateNotices);
-        model.getFridgeEntry().observe(this,this::toggleFridgeView);
+        model.getNotices().observe(this, this::updateNotices);
+        model.getFridgeEntry().observe(this, this::toggleFridgeView);
 
         recyclerView.setAdapter(adapter);
         addRatingBar.setOnRatingBarChangeListener(this::addNewRating);
@@ -132,7 +127,11 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         recyclerView2.setAdapter(adapter2);
     }
 
-    private void addNewRating(RatingBar ratingBar, float v, boolean b) {
+    private void addNewRating(RatingBar ratingBar, float v, boolean fromUser) {
+        if (!fromUser) {
+            return;
+        }
+
         Intent intent = new Intent(this, CreateRatingActivity.class);
         intent.putExtra(CreateRatingActivity.ITEM, model.getBeer().getValue());
         intent.putExtra(CreateRatingActivity.RATING, v);
@@ -148,18 +147,23 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         dialog.show();
 
 
-        view.findViewById(R.id.addPrivateNote).setOnClickListener( v -> {
+        view.findViewById(R.id.addPrivateNote).setOnClickListener(v -> {
             dialog.dismiss();
             Intent intent = new Intent(this, CreateNoticeActivity.class);
             intent.putExtra(CreateNoticeActivity.ITEM, model.getBeer().getValue());
             startActivity(intent);
         });
 
-        view.findViewById(R.id.addToFridge).setOnClickListener( v -> {
+        view.findViewById(R.id.addToFridge).setOnClickListener(v -> {
             dialog.dismiss();
             model.toggleBeerInFridge(model.getBeer().getValue().getId())
                     .addOnSuccessListener(task -> onBackPressed())
                     .addOnFailureListener(error -> Log.e(TAG, "Could not add to fridge", error));
+        });
+
+        view.findViewById(R.id.addRating).setOnClickListener(v -> {
+            dialog.dismiss();
+            addNewRating(addRatingBar, addRatingBar.getRating(), true);
         });
 
     }
@@ -180,6 +184,14 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
 
     private void updateRatings(List<Rating> ratings) {
         adapter.submitList(new ArrayList<>(ratings));
+    }
+
+    private void updateMyRatings(List<Rating> ratings) {
+        if (ratings.size() > 0) {
+            Rating mostRecentRating = ratings.get(0);
+            addRatingBar.setIsIndicator(true);
+            addRatingBar.setRating(mostRecentRating.getRating());
+        }
     }
 
     private void updateNotices(List<Notice> notices) {

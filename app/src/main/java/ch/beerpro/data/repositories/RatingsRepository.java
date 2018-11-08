@@ -2,6 +2,7 @@ package ch.beerpro.data.repositories;
 
 import android.util.Pair;
 import androidx.lifecycle.LiveData;
+import ch.beerpro.domain.models.Beer;
 import ch.beerpro.domain.models.Notice;
 import ch.beerpro.domain.models.Rating;
 import ch.beerpro.domain.models.Wish;
@@ -36,6 +37,13 @@ public class RatingsRepository {
         return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Rating.COLLECTION)
                 .orderBy(Rating.FIELD_CREATION_DATE, Query.Direction.DESCENDING)
                 .whereEqualTo(Rating.FIELD_BEER_ID, beerId), Rating.class);
+    }
+
+    public static LiveData<List<Rating>> getRatingsByUserAndBeer(Pair<String, String> input) {
+        return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Rating.COLLECTION)
+                .orderBy(Rating.FIELD_CREATION_DATE, Query.Direction.DESCENDING)
+                .whereEqualTo(Rating.FIELD_USER_ID, input.first)
+                .whereEqualTo(Rating.FIELD_BEER_ID, input.second), Rating.class);
     }
 
     public LiveData<List<Pair<Rating, Wish>>> getAllRatingsWithWishes(LiveData<List<Wish>> myWishlist) {
@@ -91,11 +99,17 @@ public class RatingsRepository {
         return switchMap(currentUserId, RatingsRepository::getRatingsByUser);
     }
 
+    public LiveData<List<Rating>> getMyRatingsForBeer(LiveData<String> currentUserId, LiveData<String> beerId) {
+        return switchMap(combineLatest(currentUserId, beerId), RatingsRepository::getRatingsByUserAndBeer);
+    }
+
+
     public static LiveData<List<Notice>> getNoticesByBeer(String beerId) {
         return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Notice.COLLECTION)
                 .orderBy(Notice.FIELD_CREATION_DATE, Query.Direction.DESCENDING)
                 .whereEqualTo(Notice.FIELD_BEER_ID, beerId).whereEqualTo(Notice.FIELD_USER_ID, FirebaseAuth.getInstance().getCurrentUser().getUid()), Notice.class);
     }
+
     public static LiveData<List<Notice>> getNoticesByUser(String userId) {
         return new FirestoreQueryLiveDataArray<>(FirebaseFirestore.getInstance().collection(Notice.COLLECTION)
                 .orderBy(Notice.FIELD_CREATION_DATE, Query.Direction.DESCENDING)
@@ -105,7 +119,6 @@ public class RatingsRepository {
     public LiveData<List<Notice>> getNoticesForBeer(LiveData<String> beerId) {
         return switchMap(beerId, RatingsRepository::getNoticesByBeer);
     }
-
 
     public LiveData<List<Notice>> getMyNotices(LiveData<String> currentUserId) {
         return switchMap(currentUserId, RatingsRepository::getNoticesByUser);

@@ -22,22 +22,25 @@ public class DetailsViewModel extends ViewModel implements CurrentUser {
     private final LiveData<Wish> wish;
     private final LiveData<FridgeEntry> fridgeEntry;
 
+    private final RatingsRepository ratingsRepository;
     private final LikesRepository likesRepository;
     private final WishlistRepository wishlistRepository;
     private final FridgeRepository fridgeRepository;
 
+    private final MutableLiveData<String> currentUserId;
+
     public DetailsViewModel() {
         // TODO We should really be injecting these!
         BeersRepository beersRepository = new BeersRepository();
-        RatingsRepository ratingsRepository = new RatingsRepository();
+        ratingsRepository = new RatingsRepository();
         likesRepository = new LikesRepository();
         wishlistRepository = new WishlistRepository();
         fridgeRepository = new FridgeRepository();
 
-        MutableLiveData<String> currentUserId = new MutableLiveData<>();
+        currentUserId = new MutableLiveData<>();
         beer = beersRepository.getBeer(beerId);
         wish = wishlistRepository.getMyWishForBeer(currentUserId, getBeer());
-        fridgeEntry = fridgeRepository.getMyFrigdeForBeer(currentUserId,getBeer());
+        fridgeEntry = fridgeRepository.getMyFrigdeForBeer(currentUserId, getBeer());
         ratings = ratingsRepository.getRatingsForBeer(beerId);
         notices = ratingsRepository.getNoticesForBeer(beerId);
         currentUserId.setValue(getCurrentUser().getUid());
@@ -51,14 +54,21 @@ public class DetailsViewModel extends ViewModel implements CurrentUser {
         return wish;
     }
 
-    public LiveData<FridgeEntry> getFridgeEntry() { return fridgeEntry; }
+    public LiveData<FridgeEntry> getFridgeEntry() {
+        return fridgeEntry;
+    }
 
     public LiveData<List<Rating>> getRatings() {
         return ratings;
     }
 
-    public LiveData<List<Notice>> getNotices(){return notices;}
+    public LiveData<List<Rating>> getMyRatings() {
+        return ratingsRepository.getMyRatingsForBeer(currentUserId, beerId);
+    }
 
+    public LiveData<List<Notice>> getNotices() {
+        return notices;
+    }
 
     public void setBeerId(String beerId) {
         this.beerId.setValue(beerId);
@@ -72,7 +82,7 @@ public class DetailsViewModel extends ViewModel implements CurrentUser {
         return wishlistRepository.toggleUserWishlistItem(getCurrentUser().getUid(), itemId);
     }
 
-    public Task<Void> toggleBeerInFridge(String itemId){
+    public Task<Void> toggleBeerInFridge(String itemId) {
         return fridgeRepository.toggleUserFridgeItem(getCurrentUser().getUid(), itemId);
     }
 }
