@@ -21,6 +21,7 @@ public class Beer implements Entity, Serializable {
     private String name;
     private String category;
     private String photo;
+    private float avgPrice;
     private float avgRating;
     private int numRatings;
 
@@ -38,6 +39,10 @@ public class Beer implements Entity, Serializable {
 
     public String getPhoto() {
         return photo;
+    }
+
+    public float getAvgPrice() {
+        return avgPrice;
     }
 
     public float getAvgRating() {

@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import ch.beerpro.GlideApp;
 import ch.beerpro.R;
 import ch.beerpro.domain.models.*;
+import ch.beerpro.presentation.details.createprice.CreatePriceActivity;
 import ch.beerpro.presentation.details.createrating.CreateNoticeActivity;
 import ch.beerpro.presentation.details.createrating.CreateRatingActivity;
 import com.bumptech.glide.request.RequestOptions;
@@ -94,7 +95,7 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         toolbar.setTitleTextColor(Color.alpha(0));
 
         String beerId = getIntent().getExtras().getString(ITEM_ID);
@@ -147,6 +148,13 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         dialog.show();
 
 
+        view.findViewById(R.id.addPrice).setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(this, CreatePriceActivity.class);
+            intent.putExtra(CreateNoticeActivity.ITEM, model.getBeer().getValue());
+            startActivity(intent);
+        });
+
         view.findViewById(R.id.addPrivateNote).setOnClickListener(v -> {
             dialog.dismiss();
             Intent intent = new Intent(this, CreateNoticeActivity.class);
@@ -157,8 +165,8 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         view.findViewById(R.id.addToFridge).setOnClickListener(v -> {
             dialog.dismiss();
             model.toggleBeerInFridge(model.getBeer().getValue().getId())
-                    .addOnSuccessListener(task -> onBackPressed())
-                    .addOnFailureListener(error -> Log.e(TAG, "Could not add to fridge", error));
+                .addOnSuccessListener(task -> onBackPressed())
+                .addOnFailureListener(error -> Log.e(TAG, "Could not add to fridge", error));
         });
 
         view.findViewById(R.id.addRating).setOnClickListener(v -> {
@@ -173,8 +181,11 @@ public class DetailsActivity extends AppCompatActivity implements OnRatingLikedL
         manufacturer.setText(item.getManufacturer());
         category.setText(item.getCategory());
         name.setText(item.getName());
-        GlideApp.with(this).load(item.getPhoto()).apply(new RequestOptions().override(120, 160).centerInside())
-                .into(photo);
+        GlideApp
+            .with(this)
+            .load(item.getPhoto())
+            .apply(new RequestOptions().override(120, 160).centerInside())
+            .into(photo);
         ratingBar.setNumStars(5);
         ratingBar.setRating(item.getAvgRating());
         avgRating.setText(getResources().getString(R.string.fmt_avg_rating, item.getAvgRating()));

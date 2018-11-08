@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="ch.beerpro">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="ch.beerpro">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".MyApplication"
@@ -18,16 +18,16 @@
             android:name=".presentation.splash.SplashScreenActivity"
             android:theme="@style/LoginScreenTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".presentation.MainActivity"
             android:label="@string/title_activity_home_screen"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".presentation.explore.search.SearchActivity" />
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".presentation.explore.search.SearchActivity"/>
         <activity
             android:name=".presentation.details.DetailsActivity"
             android:label="@string/title_activity_single_beer"
@@ -35,7 +35,7 @@
             android:theme="@style/DetailsPageTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.explore.search.SearchActivity" />
+                android:value=".presentation.explore.search.SearchActivity"/>
         </activity>
         <activity
             android:name=".presentation.details.createrating.CreateRatingActivity"
@@ -43,7 +43,7 @@
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.details.DetailsActivity" />
+                android:value=".presentation.details.DetailsActivity"/>
         </activity>
         <activity
             android:name=".presentation.details.createrating.CreateNoticeActivity"
@@ -51,12 +51,12 @@
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.details.DetailsActivity" />
+                android:value=".presentation.details.DetailsActivity"/>
         </activity>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".presentation.profile.mywishlist.WishlistActivity"
             android:label="@string/title_activity_wishlist"
@@ -64,7 +64,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.MainActivity" />
+                android:value=".presentation.MainActivity"/>
         </activity>
         <activity
             android:name=".presentation.profile.myratings.MyRatingsActivity"
@@ -73,7 +73,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.MainActivity" />
+                android:value=".presentation.MainActivity"/>
         </activity>
         <activity
             android:name=".presentation.profile.mybeers.MyBeersActivity"
@@ -82,7 +82,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.MainActivity" />
+                android:value=".presentation.MainActivity"/>
         </activity>
         <activity
             android:name=".presentation.profile.myfridge.FridgeActivity"
@@ -91,8 +91,16 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.MainActivity" />
-
+                android:value=".presentation.MainActivity"/>
+        </activity>
+        <activity
+            android:name=".presentation.details.createprice.CreatePriceActivity"
+            android:label="@string/title_activity_price"
+            android:parentActivityName=".presentation.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".presentation.MainActivity"/>
         </activity>
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     </application>
